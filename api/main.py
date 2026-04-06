@@ -31,6 +31,9 @@ class PulsarRequest(BaseModel):
 class BatchRequest(BaseModel):
     rows: list[list[float]]
 
+from functools import lru_cache
+
+@lru_cache(maxsize=16)
 def load_model(model_name: str):
     if model_name not in AVAILABLE_MODELS:
         raise HTTPException(status_code=400, detail=f"Unknown model '{model_name}'")
