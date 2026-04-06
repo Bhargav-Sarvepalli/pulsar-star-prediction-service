@@ -42,10 +42,12 @@ if "chat_history" not in st.session_state:
 
 
 # =================== SIDEBAR SETTINGS ====================
+# Always read from environment variable — never cache in session state
+api_url = DEFAULT_API
+
 with st.sidebar:
     st.header("⚙️ API Settings")
-    api_url = st.text_input("API URL", value=DEFAULT_API)
-    st.session_state["api_url"] = api_url
+    st.code(api_url, language=None)  # display-only, not editable
 
     st.header("🤖 Choose Model")
     selected_model = st.selectbox("Model", ALL_MODELS, index=0)
