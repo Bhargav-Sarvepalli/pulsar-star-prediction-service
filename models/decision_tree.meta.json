@@ -1,16 +1,8 @@
 {
-  "model_name": "decision_tree",
-  "train_time_sec": 0.02,
-  "auc": 0.9561057776226218,
-  "features": [
-    "Mean of the integrated profile",
-    "Standard deviation of the integrated profile",
-    "Excess kurtosis of the integrated profile",
-    "Skewness of the integrated profile",
-    "Mean of the DM-SNR curve",
-    "Standard deviation of the DM-SNR curve",
-    "Excess kurtosis of the DM-SNR curve",
-    "Skewness of the DM-SNR curve"
-  ],
-  "timestamp": 1764290194.2207463
+  "auc_before_smote": 0.9561057776226218,
+  "accuracy_before_smote": 0.9719676549865229,
+  "recall_before_smote": 0.8058823529411765,
+  "auc_after_smote": 0.9738610577762263,
+  "accuracy_after_smote": 0.9266846361185984,
+  "recall_after_smote": 0.9294117647058824
 }

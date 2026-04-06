@@ -1,16 +1,8 @@
 {
-  "model_name": "logreg",
-  "train_time_sec": 0.04,
-  "auc": 0.9794588933496248,
-  "features": [
-    "Mean of the integrated profile",
-    "Standard deviation of the integrated profile",
-    "Excess kurtosis of the integrated profile",
-    "Skewness of the integrated profile",
-    "Mean of the DM-SNR curve",
-    "Standard deviation of the DM-SNR curve",
-    "Excess kurtosis of the DM-SNR curve",
-    "Skewness of the DM-SNR curve"
-  ],
-  "timestamp": 1764290193.187531
+  "auc_before_smote": 0.9794588933496248,
+  "accuracy_before_smote": 0.9752021563342318,
+  "recall_before_smote": 0.8470588235294118,
+  "auc_after_smote": 0.979640425903299,
+  "accuracy_after_smote": 0.9444743935309973,
+  "recall_after_smote": 0.9352941176470588
 }
