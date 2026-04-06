@@ -34,7 +34,10 @@ ALL_MODELS = [
 
 DEFAULT_API = os.environ.get("API_URL", "http://localhost:8000")
 if not DEFAULT_API.startswith("http"):
-    DEFAULT_API = f"http://{DEFAULT_API}"
+    if "onrender.com" in DEFAULT_API:
+        DEFAULT_API = f"https://{DEFAULT_API}"
+    else:
+        DEFAULT_API = f"http://{DEFAULT_API}"
 
 
 # ========== CHATBOT SESSION SETUP ==========
