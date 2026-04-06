@@ -1,0 +1,28 @@
+services:
+  # ── FastAPI inference backend ──────────────────────────────────────────────
+  - type: web
+    name: pulsar-api
+    runtime: docker
+    dockerfilePath: ./Dockerfile.api
+    plan: free
+    healthCheckPath: /health
+    envVars:
+      - key: PYTHONUNBUFFERED
+        value: "1"
+
+  # ── Streamlit dashboard ────────────────────────────────────────────────────
+  - type: web
+    name: pulsar-dashboard
+    runtime: docker
+    dockerfilePath: ./Dockerfile.dashboard
+    plan: free
+    envVars:
+      - key: PYTHONUNBUFFERED
+        value: "1"
+      - key: OPENAI_API_KEY
+        sync: false          # Render will prompt you to fill this in the UI
+      - key: API_URL
+        fromService:
+          type: web
+          name: pulsar-api
+          property: hostport  # automatically wired to the API service's URL

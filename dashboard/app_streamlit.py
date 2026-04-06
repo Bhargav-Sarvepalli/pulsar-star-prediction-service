@@ -1,4 +1,5 @@
 # ========== app_streamlit.py ==========
+import os
 import streamlit as st
 import pandas as pd
 import numpy as np
@@ -31,7 +32,7 @@ ALL_MODELS = [
     "logreg", "logreg_no_smote"
 ]
 
-DEFAULT_API = "http://localhost:8000"
+DEFAULT_API = os.environ.get("API_URL", "http://localhost:8000")
 
 
 
