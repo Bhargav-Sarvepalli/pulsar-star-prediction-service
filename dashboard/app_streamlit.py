@@ -33,7 +33,8 @@ ALL_MODELS = [
 ]
 
 DEFAULT_API = os.environ.get("API_URL", "http://localhost:8000")
-
+if not DEFAULT_API.startswith("http"):
+    DEFAULT_API = f"http://{DEFAULT_API}"
 
 
 # ========== CHATBOT SESSION SETUP ==========
@@ -48,6 +49,7 @@ api_url = DEFAULT_API
 with st.sidebar:
     st.header("⚙️ API Settings")
     st.code(api_url, language=None)  # display-only, not editable
+
 
     st.header("🤖 Choose Model")
     selected_model = st.selectbox("Model", ALL_MODELS, index=0)
@@ -127,7 +129,7 @@ if "uploaded_df" in st.session_state:
             df_pred["target_class"] = df["target_class"]
 
         # Render EDA
-        render_eda(df_features, df_pred, has_label)
+        render_eda(df_features, df_pred, has_label, api_url)
 
         # Download button
         st.download_button(
@@ -139,63 +141,21 @@ if "uploaded_df" in st.session_state:
     except Exception as e:
         st.error(f"Backend Error: {e}")
 
-# ======================= FLOATING CHATBOT =======================
+# ======================= CHATBOT =======================
 
-# CSS
-st.markdown("""
-<style>
-#chatbot-box {
-    position: fixed;
-    bottom: 20px;
-    right: 20px;
-    width: 320px;
-    max-height: 70vh;
-    padding: 15px;
-    background: rgba(255,255,255,0.95);
-    border-radius: 12px;
-    border: 1px solid #ccc;
-    box-shadow: 0 4px 12px rgba(0,0,0,0.25);
-    overflow-y: auto;
-    z-index: 99999;
-}
-#chatbot-header {
-    font-weight: bold;
-    font-size: 18px;
-    margin-bottom: 10px;
-}
-.chat-user { font-weight: bold; margin-top: 8px; }
-.chat-assistant { margin-left: 4px; margin-bottom: 8px; }
-</style>
-""", unsafe_allow_html=True)
+st.subheader("💬 Ask the Assistant")
 
-
-
-# Show chat history
-history_html = ""
-for msg in st.session_state.chat_history:
-    if msg["role"] == "user":
-        history_html += f"<div class='chat-user'>You:</div><div>{msg['content']}</div>"
-    else:
-        history_html += f"<div class='chat-assistant'>Assistant:</div><div>{msg['content']}</div>"
-
-st.markdown(history_html, unsafe_allow_html=True)
-
-# Chat input
-query = st.text_input("Ask something:", key="chat_query")
+# Chat input inline (st.chat_input pins to bottom of screen, which we do NOT want)
+query = st.text_input("Ask something about the models or data:", key="chat_query_box")
 
 if query:
     answer = ask_question(query)
 
-    # Store messages
-    st.session_state.chat_history.append({"role": "user", "content": query})
-    st.session_state.chat_history.append({"role": "assistant", "content": answer})
+    # Store messages (we will display latest first)
+    st.session_state.chat_history.insert(0, {"role": "assistant", "content": answer})
+    st.session_state.chat_history.insert(0, {"role": "user", "content": query})
 
-    # Clear ONLY by popping the key
-    st.session_state.pop("chat_query", None)
-
-    # Rerun cleanly
-    st.rerun()
-
-# close chatbot box
-st.markdown("</div>", unsafe_allow_html=True)
-
+# Show chat history directly below the inline prompt box
+for msg in st.session_state.chat_history:
+    with st.chat_message(msg["role"]):
+        st.markdown(msg["content"])

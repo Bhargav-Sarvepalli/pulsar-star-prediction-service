@@ -7,8 +7,7 @@ from openai import OpenAI
 # Load environment variables
 load_dotenv()
 
-# Initialize OpenAI client
-client = OpenAI(api_key=os.getenv("OPENAI_API_KEY") or st.secrets.get("OPENAI_API_KEY"))
+
 
 # System prompt with full Pulsar dashboard context
 SYSTEM_PROMPT = (
@@ -25,6 +24,20 @@ def ask_question(user_query, context=None):
     """
     Sends the question + chat history + system prompt to OpenAI.
     """
+
+    # Check for API Key dynamically (force reload to pick up hot-swapped .env updates)
+    load_dotenv(override=True)
+    api_key = st.session_state.get("OPENAI_API_KEY") or os.getenv("OPENAI_API_KEY")
+    if not api_key:
+        try:
+            api_key = st.secrets.get("OPENAI_API_KEY")
+        except Exception:
+            pass
+
+    if not api_key or api_key.strip() == "" or api_key.startswith("sk-dummy"):
+        return "⚠️ Chatbot is currently unavailable (Backend API Key is missing)."
+
+    local_client = OpenAI(api_key=api_key)
 
     # Build full message history
     messages = []
@@ -45,7 +58,7 @@ def ask_question(user_query, context=None):
 
     try:
         # Call OpenAI Chat API
-        response = client.chat.completions.create(
+        response = local_client.chat.completions.create(
             model="gpt-4o-mini",
             messages=messages
         )

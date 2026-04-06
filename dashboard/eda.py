@@ -9,11 +9,12 @@ import requests
 import time
 
 
-def render_eda(df_features: pd.DataFrame, df_pred: pd.DataFrame, has_label: bool):
+def render_eda(df_features: pd.DataFrame, df_pred: pd.DataFrame, has_label: bool, api_url: str):
     """
     df_features: cleaned features-only DataFrame (8 columns)
     df_pred: df_features + ["pulsar_prob", "prediction"] (+ ["target_class"] if available)
     has_label: whether the uploaded CSV contained a target column
+    api_url: The URL to the API
     """
 
     st.markdown("### Quick EDA")
@@ -185,7 +186,7 @@ def render_eda(df_features: pd.DataFrame, df_pred: pd.DataFrame, has_label: bool
                 t0 = time.time()
 
                 r = requests.post(
-                    f"{st.session_state['api_url']}/predict_batch?model_name={model_name}",
+                    f"{api_url}/predict_batch?model_name={model_name}",
                     json={"rows": df_features.values.tolist()},
                     timeout=120,
                 )
